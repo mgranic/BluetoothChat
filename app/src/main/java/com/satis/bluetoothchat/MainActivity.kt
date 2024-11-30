@@ -30,9 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.satis.bluetoothchat.ui.theme.BluetoothChatTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,7 +38,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BluetoothChatTheme {
-                val navController = rememberNavController()
                 BTChatApp()
             }
         }
