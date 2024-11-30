@@ -57,4 +57,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.androidx.activity.ktx)  // or newer version
+    implementation(libs.androidx.appcompat)      // ensure you have AppCompat for compatibility
 }

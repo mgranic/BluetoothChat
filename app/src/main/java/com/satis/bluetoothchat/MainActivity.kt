@@ -42,8 +42,9 @@ class MainActivity : ComponentActivity() {
             BluetoothChatTheme {
                 BTChatApp()
             }
-            BtManager(ctx = this, activity = this).requestPermissions()
         }
+
+        BtManager(ctx = this, activity = this).startBluetooth()
     }
 
     @Composable
