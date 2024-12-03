@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,16 +36,19 @@ import com.satis.bluetoothchat.logic.BtManager
 import com.satis.bluetoothchat.ui.theme.BluetoothChatTheme
 
 class MainActivity : ComponentActivity() {
+    private lateinit var btManager: BtManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        btManager = BtManager(ctx = this, activity = this)
         setContent {
             BluetoothChatTheme {
                 BTChatApp()
             }
         }
 
-        BtManager(ctx = this, activity = this).startBluetooth()
+        //BtManager(ctx = this, activity = this).startBluetooth()
+        //btManager = BtManager(ctx = this, activity = this)
     }
 
     @Composable
@@ -73,7 +77,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MainScreenLayout(modifier: Modifier = Modifier) {
-        var devices by remember { mutableStateOf(listOf("device 1", "device 2")) }
+        //var devices by remember { mutableStateOf(listOf("device 1", "device 2")) }
+        //val btManager by remember { mutableStateOf(BtManager(ctx = this, activity = this)) }
+        btManager.startBluetooth()
+
         // Column layout to arrange text and button vertically
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,7 +91,7 @@ class MainActivity : ComponentActivity() {
                 // Button to start scanning
                 Button(onClick = {
                     print("******* START SCANNING ********")
-                    devices = devices + "added device"
+                    //devices = devices + "added device"
                 }) {
                     Text(text = "Start scanning")
                 }
@@ -92,7 +99,7 @@ class MainActivity : ComponentActivity() {
                 // Button to stop scanning
                 Button(onClick = {
                     print("******* STOP SCANNING ********")
-                    devices = devices - "added device"
+                    //devices = devices - "added device"
                 }) {
                     Text(text = "Stop scanning")
                 }
@@ -101,9 +108,9 @@ class MainActivity : ComponentActivity() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // display list of scanned devices here
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(devices) { device ->
+                    items(btManager.discoveredDevices) { device ->
                         Text(
-                            text = "${device}",
+                            text = "Device = $device",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 8.dp)

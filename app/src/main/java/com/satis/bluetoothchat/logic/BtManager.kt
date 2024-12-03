@@ -18,8 +18,13 @@ import androidx.core.app.ActivityCompat
 //import androidx.activity.result.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.core.content.ContextCompat.registerReceiver
 import androidx.core.content.PermissionChecker.checkSelfPermission
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 class BtManager(val ctx: Context, val activity: ComponentActivity) {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
@@ -27,10 +32,12 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
     //private lateinit var deviceListAdapter: ArrayAdapter<String>
-    private val discoveredDevices = mutableListOf<String>()
+    // Observable list of discovered devices
+    private val _discoveredDevices = mutableStateListOf<String>()
+    val discoveredDevices: SnapshotStateList<String> = _discoveredDevices
 
     // Define the activity result launcher
-    val enableBluetoothResultLauncher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val enableBluetoothResultLauncher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             Log.d("****SATIS****", "Bluetooth has been enabled")
             // Proceed with Bluetooth operations
@@ -69,8 +76,8 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                     val deviceAddress = it.address // MAC address
                     val deviceInfo = "$deviceName ($deviceAddress)"
                     Log.d("****SATIS****", "****** BCR 5 ***********")
-                    if (!discoveredDevices.contains(deviceInfo)) {
-                        discoveredDevices.add(deviceInfo)
+                    if (!_discoveredDevices.contains(deviceInfo)) {
+                        _discoveredDevices.add(deviceInfo)
                         Log.d("satis custom debug", "******* 1 ***** $deviceInfo ********")
                         //deviceListAdapter.notifyDataSetChanged()
                     }
@@ -80,13 +87,17 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
     }
 
     // Register the BroadcastReceiver for device discovery
-    val filter = IntentFilter().apply {
+    private val filter = IntentFilter().apply {
         addAction(BluetoothDevice.ACTION_FOUND)
         addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
     }
 
-    fun startBluetooth() {
+    init {
         requestPermissions()
+    }
+
+    fun startBluetooth() {
+        //requestPermissions()
         enableBluetooth()
         startBluetoothDiscovery { devices ->
             if (devices.isNotEmpty()) {
@@ -113,7 +124,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
         }
     }
 
-    fun requestPermissions() {
+    private fun requestPermissions() {
 
         // Initialize the permission launcher
         requestPermissionLauncher = activity.registerForActivityResult(
@@ -138,20 +149,20 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
         }
 
         // Collect required permissions for Android 12+ (API 31+)
-            val requiredPermissions = mutableListOf<String>()
+        val requiredPermissions = mutableListOf<String>()
 
-            if (activity.checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                requiredPermissions.add(Manifest.permission.BLUETOOTH_SCAN)
-            }
-            if (activity.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                requiredPermissions.add(Manifest.permission.BLUETOOTH_CONNECT)
-            }
+        if (activity.checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            requiredPermissions.add(Manifest.permission.BLUETOOTH_SCAN)
+        }
+        if (activity.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            requiredPermissions.add(Manifest.permission.BLUETOOTH_CONNECT)
+        }
 
-            if (requiredPermissions.isNotEmpty()) {
-                Log.d("****SATIS****", "Requesting permissions: $requiredPermissions")
-                requestPermissionLauncher.launch(requiredPermissions.toTypedArray())
-                return
-            }
+        if (requiredPermissions.isNotEmpty()) {
+            Log.d("****SATIS****", "Requesting permissions: $requiredPermissions")
+            requestPermissionLauncher.launch(requiredPermissions.toTypedArray())
+            return
+        }
 
         Log.d("****SATIS****", "All permissions granted, proceeding with Bluetooth actions")
         enableBluetooth()
@@ -159,7 +170,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
 
 
 
-    fun enableBluetooth() {
+    private fun enableBluetooth() {
 
         if (bluetoothAdapter == null) {
             Toast.makeText(ctx, "Bluetooth not supported on this device", Toast.LENGTH_SHORT).show()
@@ -175,7 +186,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
         }
     }
 
-    fun startBluetoothDiscovery(onDiscoveryComplete: (List<BluetoothDevice>) -> Unit) {
+    private fun startBluetoothDiscovery(onDiscoveryComplete: (List<BluetoothDevice>) -> Unit) {
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
         if (bluetoothAdapter == null) {
