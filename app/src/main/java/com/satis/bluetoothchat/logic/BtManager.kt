@@ -1,5 +1,6 @@
 package com.satis.bluetoothchat.logic
 
+//import androidx.activity.result.ActivityResultContracts
 import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
@@ -10,21 +11,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.util.Log
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-//import androidx.activity.result.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.core.content.ContextCompat.registerReceiver
-import androidx.core.content.PermissionChecker.checkSelfPermission
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.StateFlow
+import androidx.core.app.ActivityCompat
 
 class BtManager(val ctx: Context, val activity: ComponentActivity) {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
@@ -68,9 +61,10 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                         // to handle the case where the user grants the permission. See the documentation
                         // for ActivityCompat#requestPermissions for more details.
                         Log.d("****SATIS****", "****** BCR 3 ***********")
-                        return
+                        "Unknown Device - No permission granted"
                     } else {
                         Log.d("****SATIS****", "****** BCR 4 ***********")
+                        device.name ?: "Unknown Device"
                     }
                     it.name ?: "Unknown Device"
                     val deviceAddress = it.address // MAC address
@@ -89,6 +83,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
     // Register the BroadcastReceiver for device discovery
     private val filter = IntentFilter().apply {
         addAction(BluetoothDevice.ACTION_FOUND)
+        addAction(BluetoothDevice.ACTION_NAME_CHANGED)
         addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
     }
 
