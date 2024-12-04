@@ -1,0 +1,593 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		203DDFBE2D008157003B16E9 /* BluetoothChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFBD2D008157003B16E9 /* BluetoothChatApp.swift */; };
+		203DDFC02D008157003B16E9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFBF2D008157003B16E9 /* ContentView.swift */; };
+		203DDFC22D008159003B16E9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 203DDFC12D008159003B16E9 /* Assets.xcassets */; };
+		203DDFC52D008159003B16E9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 203DDFC42D008159003B16E9 /* Preview Assets.xcassets */; };
+		203DDFCF2D008159003B16E9 /* BluetoothChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFCE2D008159003B16E9 /* BluetoothChatTests.swift */; };
+		203DDFD92D008159003B16E9 /* BluetoothChatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFD82D008159003B16E9 /* BluetoothChatUITests.swift */; };
+		203DDFDB2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFDA2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		203DDFCB2D008159003B16E9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 203DDFB22D008157003B16E9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 203DDFB92D008157003B16E9;
+			remoteInfo = BluetoothChat;
+		};
+		203DDFD52D008159003B16E9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 203DDFB22D008157003B16E9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 203DDFB92D008157003B16E9;
+			remoteInfo = BluetoothChat;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		203DDFBA2D008157003B16E9 /* BluetoothChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluetoothChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		203DDFBD2D008157003B16E9 /* BluetoothChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChatApp.swift; sourceTree = "<group>"; };
+		203DDFBF2D008157003B16E9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		203DDFC12D008159003B16E9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		203DDFC42D008159003B16E9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		203DDFCA2D008159003B16E9 /* BluetoothChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BluetoothChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		203DDFCE2D008159003B16E9 /* BluetoothChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChatTests.swift; sourceTree = "<group>"; };
+		203DDFD42D008159003B16E9 /* BluetoothChatUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BluetoothChatUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		203DDFD82D008159003B16E9 /* BluetoothChatUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChatUITests.swift; sourceTree = "<group>"; };
+		203DDFDA2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChatUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		203DDFB72D008157003B16E9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		203DDFC72D008159003B16E9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		203DDFD12D008159003B16E9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		203DDFB12D008157003B16E9 = {
+			isa = PBXGroup;
+			children = (
+				203DDFBC2D008157003B16E9 /* BluetoothChat */,
+				203DDFCD2D008159003B16E9 /* BluetoothChatTests */,
+				203DDFD72D008159003B16E9 /* BluetoothChatUITests */,
+				203DDFBB2D008157003B16E9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		203DDFBB2D008157003B16E9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				203DDFBA2D008157003B16E9 /* BluetoothChat.app */,
+				203DDFCA2D008159003B16E9 /* BluetoothChatTests.xctest */,
+				203DDFD42D008159003B16E9 /* BluetoothChatUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		203DDFBC2D008157003B16E9 /* BluetoothChat */ = {
+			isa = PBXGroup;
+			children = (
+				203DDFBD2D008157003B16E9 /* BluetoothChatApp.swift */,
+				203DDFBF2D008157003B16E9 /* ContentView.swift */,
+				203DDFC12D008159003B16E9 /* Assets.xcassets */,
+				203DDFC32D008159003B16E9 /* Preview Content */,
+			);
+			path = BluetoothChat;
+			sourceTree = "<group>";
+		};
+		203DDFC32D008159003B16E9 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				203DDFC42D008159003B16E9 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		203DDFCD2D008159003B16E9 /* BluetoothChatTests */ = {
+			isa = PBXGroup;
+			children = (
+				203DDFCE2D008159003B16E9 /* BluetoothChatTests.swift */,
+			);
+			path = BluetoothChatTests;
+			sourceTree = "<group>";
+		};
+		203DDFD72D008159003B16E9 /* BluetoothChatUITests */ = {
+			isa = PBXGroup;
+			children = (
+				203DDFD82D008159003B16E9 /* BluetoothChatUITests.swift */,
+				203DDFDA2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift */,
+			);
+			path = BluetoothChatUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		203DDFB92D008157003B16E9 /* BluetoothChat */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 203DDFDE2D008159003B16E9 /* Build configuration list for PBXNativeTarget "BluetoothChat" */;
+			buildPhases = (
+				203DDFB62D008157003B16E9 /* Sources */,
+				203DDFB72D008157003B16E9 /* Frameworks */,
+				203DDFB82D008157003B16E9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BluetoothChat;
+			productName = BluetoothChat;
+			productReference = 203DDFBA2D008157003B16E9 /* BluetoothChat.app */;
+			productType = "com.apple.product-type.application";
+		};
+		203DDFC92D008159003B16E9 /* BluetoothChatTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 203DDFE12D008159003B16E9 /* Build configuration list for PBXNativeTarget "BluetoothChatTests" */;
+			buildPhases = (
+				203DDFC62D008159003B16E9 /* Sources */,
+				203DDFC72D008159003B16E9 /* Frameworks */,
+				203DDFC82D008159003B16E9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				203DDFCC2D008159003B16E9 /* PBXTargetDependency */,
+			);
+			name = BluetoothChatTests;
+			productName = BluetoothChatTests;
+			productReference = 203DDFCA2D008159003B16E9 /* BluetoothChatTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		203DDFD32D008159003B16E9 /* BluetoothChatUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 203DDFE42D008159003B16E9 /* Build configuration list for PBXNativeTarget "BluetoothChatUITests" */;
+			buildPhases = (
+				203DDFD02D008159003B16E9 /* Sources */,
+				203DDFD12D008159003B16E9 /* Frameworks */,
+				203DDFD22D008159003B16E9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				203DDFD62D008159003B16E9 /* PBXTargetDependency */,
+			);
+			name = BluetoothChatUITests;
+			productName = BluetoothChatUITests;
+			productReference = 203DDFD42D008159003B16E9 /* BluetoothChatUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		203DDFB22D008157003B16E9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					203DDFB92D008157003B16E9 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					203DDFC92D008159003B16E9 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 203DDFB92D008157003B16E9;
+					};
+					203DDFD32D008159003B16E9 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 203DDFB92D008157003B16E9;
+					};
+				};
+			};
+			buildConfigurationList = 203DDFB52D008157003B16E9 /* Build configuration list for PBXProject "BluetoothChat" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 203DDFB12D008157003B16E9;
+			productRefGroup = 203DDFBB2D008157003B16E9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				203DDFB92D008157003B16E9 /* BluetoothChat */,
+				203DDFC92D008159003B16E9 /* BluetoothChatTests */,
+				203DDFD32D008159003B16E9 /* BluetoothChatUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		203DDFB82D008157003B16E9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				203DDFC52D008159003B16E9 /* Preview Assets.xcassets in Resources */,
+				203DDFC22D008159003B16E9 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		203DDFC82D008159003B16E9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		203DDFD22D008159003B16E9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		203DDFB62D008157003B16E9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				203DDFC02D008157003B16E9 /* ContentView.swift in Sources */,
+				203DDFBE2D008157003B16E9 /* BluetoothChatApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		203DDFC62D008159003B16E9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				203DDFCF2D008159003B16E9 /* BluetoothChatTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		203DDFD02D008159003B16E9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				203DDFD92D008159003B16E9 /* BluetoothChatUITests.swift in Sources */,
+				203DDFDB2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		203DDFCC2D008159003B16E9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 203DDFB92D008157003B16E9 /* BluetoothChat */;
+			targetProxy = 203DDFCB2D008159003B16E9 /* PBXContainerItemProxy */;
+		};
+		203DDFD62D008159003B16E9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 203DDFB92D008157003B16E9 /* BluetoothChat */;
+			targetProxy = 203DDFD52D008159003B16E9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		203DDFDC2D008159003B16E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		203DDFDD2D008159003B16E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		203DDFDF2D008159003B16E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"BluetoothChat/Preview Content\"";
+				DEVELOPMENT_TEAM = 6LP5U8F7VW;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.statis.BluetoothChat;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		203DDFE02D008159003B16E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"BluetoothChat/Preview Content\"";
+				DEVELOPMENT_TEAM = 6LP5U8F7VW;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.statis.BluetoothChat;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		203DDFE22D008159003B16E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6LP5U8F7VW;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.statis.BluetoothChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BluetoothChat.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BluetoothChat";
+			};
+			name = Debug;
+		};
+		203DDFE32D008159003B16E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6LP5U8F7VW;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.statis.BluetoothChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BluetoothChat.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BluetoothChat";
+			};
+			name = Release;
+		};
+		203DDFE52D008159003B16E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6LP5U8F7VW;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.statis.BluetoothChatUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BluetoothChat;
+			};
+			name = Debug;
+		};
+		203DDFE62D008159003B16E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6LP5U8F7VW;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.statis.BluetoothChatUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BluetoothChat;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		203DDFB52D008157003B16E9 /* Build configuration list for PBXProject "BluetoothChat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				203DDFDC2D008159003B16E9 /* Debug */,
+				203DDFDD2D008159003B16E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		203DDFDE2D008159003B16E9 /* Build configuration list for PBXNativeTarget "BluetoothChat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				203DDFDF2D008159003B16E9 /* Debug */,
+				203DDFE02D008159003B16E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		203DDFE12D008159003B16E9 /* Build configuration list for PBXNativeTarget "BluetoothChatTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				203DDFE22D008159003B16E9 /* Debug */,
+				203DDFE32D008159003B16E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		203DDFE42D008159003B16E9 /* Build configuration list for PBXNativeTarget "BluetoothChatUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				203DDFE52D008159003B16E9 /* Debug */,
+				203DDFE62D008159003B16E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 203DDFB22D008157003B16E9 /* Project object */;
+}
