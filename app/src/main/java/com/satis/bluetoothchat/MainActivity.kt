@@ -28,6 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.satis.bluetoothchat.logic.BtManager
 import com.satis.bluetoothchat.ui.theme.BluetoothChatTheme
 
@@ -49,11 +53,23 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun BTChatApp() {
-
+        val navController = rememberNavController()
         Scaffold(
             topBar = { MainAppBar() },
             content = { innerPadding ->
-                MainScreenLayout(modifier = Modifier.padding(innerPadding))
+                //MainScreenLayout(modifier = Modifier.padding(innerPadding))
+                NavHost(
+                    navController = navController,
+                    startDestination = "intro_screen",
+                    modifier = Modifier.padding(innerPadding)
+                ) {
+                    composable(route = "intro_screen") {
+                        IntroScreenLayout(modifier = Modifier.padding(innerPadding), navCont = navController)
+                    }
+                    composable(route = "home_screen") {
+                        MainScreenLayout(modifier = Modifier.padding(innerPadding))
+                    }
+                }
             }
         )
     }
@@ -133,6 +149,38 @@ class MainActivity : ComponentActivity() {
                         Divider()
                     }
                 }
+            }
+        }
+    }
+
+    @Composable
+    fun IntroScreenLayout(modifier: Modifier = Modifier, navCont: NavController) {
+
+        // Column layout to arrange text and button vertically
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = modifier.fillMaxSize()
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // Button to start scanning
+                Button(onClick = {
+                    navCont.navigate("home_screen") {
+                        popUpTo("intro_screen") { inclusive = true }
+                    }
+                }) {
+                    Text(text = "Start server")
+                }
+
+                // Button to stop scanning
+                Button(onClick = {
+                    navCont.navigate("home_screen") {
+                        popUpTo("intro_screen") { inclusive = true }
+                    }
+                }) {
+                    Text(text = "Start client")
+                }
+
             }
         }
     }
