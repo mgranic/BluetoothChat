@@ -11,7 +11,7 @@ import SwiftUI
 struct BluetoothChatApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            IntroScreen()
         }
     }
 }

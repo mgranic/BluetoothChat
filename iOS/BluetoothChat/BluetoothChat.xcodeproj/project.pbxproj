@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		203DDFBE2D008157003B16E9 /* BluetoothChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFBD2D008157003B16E9 /* BluetoothChatApp.swift */; };
-		203DDFC02D008157003B16E9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFBF2D008157003B16E9 /* ContentView.swift */; };
+		203DDFC02D008157003B16E9 /* IntroScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFBF2D008157003B16E9 /* IntroScreen.swift */; };
 		203DDFC22D008159003B16E9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 203DDFC12D008159003B16E9 /* Assets.xcassets */; };
 		203DDFC52D008159003B16E9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 203DDFC42D008159003B16E9 /* Preview Assets.xcassets */; };
 		203DDFCF2D008159003B16E9 /* BluetoothChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFCE2D008159003B16E9 /* BluetoothChatTests.swift */; };
@@ -36,7 +36,7 @@
 /* Begin PBXFileReference section */
 		203DDFBA2D008157003B16E9 /* BluetoothChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluetoothChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		203DDFBD2D008157003B16E9 /* BluetoothChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChatApp.swift; sourceTree = "<group>"; };
-		203DDFBF2D008157003B16E9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		203DDFBF2D008157003B16E9 /* IntroScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroScreen.swift; sourceTree = "<group>"; };
 		203DDFC12D008159003B16E9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		203DDFC42D008159003B16E9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		203DDFCA2D008159003B16E9 /* BluetoothChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BluetoothChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,8 +94,8 @@
 		203DDFBC2D008157003B16E9 /* BluetoothChat */ = {
 			isa = PBXGroup;
 			children = (
+				203DDFE72D008284003B16E9 /* view */,
 				203DDFBD2D008157003B16E9 /* BluetoothChatApp.swift */,
-				203DDFBF2D008157003B16E9 /* ContentView.swift */,
 				203DDFC12D008159003B16E9 /* Assets.xcassets */,
 				203DDFC32D008159003B16E9 /* Preview Content */,
 			);
@@ -125,6 +125,14 @@
 				203DDFDA2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift */,
 			);
 			path = BluetoothChatUITests;
+			sourceTree = "<group>";
+		};
+		203DDFE72D008284003B16E9 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				203DDFBF2D008157003B16E9 /* IntroScreen.swift */,
+			);
+			path = view;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,7 +265,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				203DDFC02D008157003B16E9 /* ContentView.swift in Sources */,
+				203DDFC02D008157003B16E9 /* IntroScreen.swift in Sources */,
 				203DDFBE2D008157003B16E9 /* BluetoothChatApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
