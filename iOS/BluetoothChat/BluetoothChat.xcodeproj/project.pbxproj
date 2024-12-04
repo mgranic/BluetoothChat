@@ -15,6 +15,7 @@
 		203DDFD92D008159003B16E9 /* BluetoothChatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFD82D008159003B16E9 /* BluetoothChatUITests.swift */; };
 		203DDFDB2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFDA2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift */; };
 		203DDFE92D0083C6003B16E9 /* MainScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFE82D0083C6003B16E9 /* MainScreen.swift */; };
+		203DDFEC2D0087C6003B16E9 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFEB2D0087C6003B16E9 /* BluetoothManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		203DDFD82D008159003B16E9 /* BluetoothChatUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChatUITests.swift; sourceTree = "<group>"; };
 		203DDFDA2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChatUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		203DDFE82D0083C6003B16E9 /* MainScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreen.swift; sourceTree = "<group>"; };
+		203DDFEB2D0087C6003B16E9 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 		203DDFBC2D008157003B16E9 /* BluetoothChat */ = {
 			isa = PBXGroup;
 			children = (
+				203DDFEA2D0087AC003B16E9 /* logic */,
 				203DDFE72D008284003B16E9 /* view */,
 				203DDFBD2D008157003B16E9 /* BluetoothChatApp.swift */,
 				203DDFC12D008159003B16E9 /* Assets.xcassets */,
@@ -136,6 +139,14 @@
 				203DDFE82D0083C6003B16E9 /* MainScreen.swift */,
 			);
 			path = view;
+			sourceTree = "<group>";
+		};
+		203DDFEA2D0087AC003B16E9 /* logic */ = {
+			isa = PBXGroup;
+			children = (
+				203DDFEB2D0087C6003B16E9 /* BluetoothManager.swift */,
+			);
+			path = logic;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -270,6 +281,7 @@
 			files = (
 				203DDFE92D0083C6003B16E9 /* MainScreen.swift in Sources */,
 				203DDFC02D008157003B16E9 /* IntroScreen.swift in Sources */,
+				203DDFEC2D0087C6003B16E9 /* BluetoothManager.swift in Sources */,
 				203DDFBE2D008157003B16E9 /* BluetoothChatApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -437,6 +449,8 @@
 				DEVELOPMENT_TEAM = 6LP5U8F7VW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "scan for device";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "communicate with devices";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -466,6 +480,8 @@
 				DEVELOPMENT_TEAM = 6LP5U8F7VW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "scan for device";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "communicate with devices";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
