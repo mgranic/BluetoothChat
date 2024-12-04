@@ -23,7 +23,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.core.app.ActivityCompat
-import com.satis.bluetoothchat.model.BtDevice
 import java.util.UUID
 
 class BtManager(val ctx: Context, val activity: ComponentActivity) {
