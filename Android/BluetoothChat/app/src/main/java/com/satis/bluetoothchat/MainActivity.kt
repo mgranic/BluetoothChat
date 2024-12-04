@@ -159,6 +159,7 @@ class MainActivity : ComponentActivity() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Button to start scanning
                 Button(onClick = {
+                    btManager.startBtServer()
                     navCont.navigate("home_screen") {
                         popUpTo("intro_screen") { inclusive = true }
                     }
@@ -168,6 +169,7 @@ class MainActivity : ComponentActivity() {
 
                 // Button to stop scanning
                 Button(onClick = {
+                    btManager.startBtClient()
                     navCont.navigate("home_screen") {
                         popUpTo("intro_screen") { inclusive = true }
                     }

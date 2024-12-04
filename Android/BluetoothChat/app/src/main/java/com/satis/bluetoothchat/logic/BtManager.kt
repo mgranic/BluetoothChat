@@ -247,4 +247,24 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
 
         Log.d("****SATIS****", "Attempting to connect to ${device.name} (${device.address})")
     }
+
+    fun startBtServer() {
+        if (bluetoothAdapter.isEnabled) {
+            val server = BluetoothServer(bluetoothAdapter)
+            CoroutineScope(Dispatchers.IO).launch {
+                server.startServer()
+            }
+        }
+    }
+
+    fun startBtClient() {
+        val serverDevice = bluetoothAdapter.bondedDevices.find { it.name == "ServerDeviceName" } // Replace with the server device's name
+        serverDevice?.let {
+            val client = BluetoothClient(bluetoothAdapter, it)
+            CoroutineScope(Dispatchers.IO).launch {
+                client.connectToServer()
+            }
+        }
+
+    }
 }
