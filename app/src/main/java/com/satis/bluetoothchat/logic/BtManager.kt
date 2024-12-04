@@ -5,6 +5,8 @@ import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -21,11 +23,13 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.core.app.ActivityCompat
+import com.satis.bluetoothchat.model.BtDevice
+import java.util.UUID
 
 class BtManager(val ctx: Context, val activity: ComponentActivity) {
     // Observable list of discovered devices
-    private val _discoveredDevices = mutableStateListOf<String>()
-    val discoveredDevices: SnapshotStateList<String> = _discoveredDevices
+    private val _discoveredDevices = mutableStateListOf<BluetoothDevice>()
+    val discoveredDevices: SnapshotStateList<BluetoothDevice> = _discoveredDevices
 
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
@@ -62,11 +66,14 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                     } else {
                         device.name ?: "Unknown Device"
                     }
-                    it.name ?: "Unknown Device"
-                    val deviceAddress = it.address // MAC address
-                    val deviceInfo = "$deviceName ($deviceAddress)"
-                    if (!_discoveredDevices.contains(deviceInfo)) {
-                        _discoveredDevices.add(deviceInfo)
+                    //it.name ?: "Unknown Device"
+                    //val deviceAddress = it.address // MAC address
+                    //val deviceInfo = "$deviceName ($deviceAddress)"
+                    //if (!_discoveredDevices.contains(deviceInfo)) {
+                    //    _discoveredDevices.add(deviceInfo)
+                    //}
+                    if (!_discoveredDevices.contains(device)) {
+                        _discoveredDevices.add(device)
                     }
                 }
             }
@@ -241,5 +248,100 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
         activity.unregisterReceiver(receiver)
     }
 
+    fun connectToBtDevice(device: BluetoothDevice) {
+        val type = if (ActivityCompat.checkSelfPermission(
+                ctx,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        } else {
+            device.type
+        }
+        when (type) {
+            BluetoothDevice.DEVICE_TYPE_CLASSIC -> connectToClassicDevice(device)
+            BluetoothDevice.DEVICE_TYPE_LE -> connectToLEDevice(device)
+            BluetoothDevice.DEVICE_TYPE_DUAL -> connectToLEDevice(device)
+            else -> Toast.makeText(ctx, "Unknown device type", Toast.LENGTH_SHORT).show()
+        }
 
+    }
+
+    private fun connectToClassicDevice(device: BluetoothDevice) {
+        // Ensure Bluetooth permissions
+        if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("****SATIS****", "Bluetooth CONNECT permission is missing.")
+            return
+        }
+
+        // Common UUID for serial communication
+        val uuid = device.uuids?.firstOrNull()?.uuid ?: return
+        val bluetoothSocket = device.createRfcommSocketToServiceRecord(uuid)
+
+        try {
+            // Cancel discovery to avoid interference
+            val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            if (bluetoothAdapter.isDiscovering) {
+                bluetoothAdapter.cancelDiscovery()
+            }
+
+            // Connect to the device
+            bluetoothSocket.connect()
+            Log.d("****SATIS****", "Connected to ${device.name} (${device.address})")
+        } catch (e: Exception) {
+            Log.e("****SATIS****", "Failed to connect: ${e.message}")
+        }
+    }
+
+    private fun connectToLEDevice(device: BluetoothDevice) {
+        if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("****SATIS****", "Bluetooth CONNECT permission is missing.")
+            return
+        }
+
+        val bluetoothGatt = device.connectGatt(ctx, false, object : BluetoothGattCallback() {
+            override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+                super.onConnectionStateChange(gatt, status, newState)
+                if (newState == BluetoothGatt.STATE_CONNECTED) {
+                    Log.d("****SATIS****", "Connected to GATT server on ${device.name}")
+                    // Discover services
+                    if (ActivityCompat.checkSelfPermission(
+                            ctx,
+                            Manifest.permission.BLUETOOTH_CONNECT
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return
+                    }
+                    gatt.discoverServices()
+                } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
+                    Log.d("****SATIS****", "Disconnected from GATT server on ${device.name}")
+                }
+            }
+
+            override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+                super.onServicesDiscovered(gatt, status)
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    Log.d("****SATIS****", "Services discovered: ${gatt.services}")
+                } else {
+                    Log.w("****SATIS****", "Failed to discover services: $status")
+                }
+            }
+        })
+
+        Log.d("****SATIS****", "Attempting to connect to ${device.name} (${device.address})")
+    }
 }

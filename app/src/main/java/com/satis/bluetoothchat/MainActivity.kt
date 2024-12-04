@@ -1,6 +1,9 @@
 package com.satis.bluetoothchat
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -24,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import com.satis.bluetoothchat.logic.BtManager
 import com.satis.bluetoothchat.ui.theme.BluetoothChatTheme
 
@@ -101,12 +105,31 @@ class MainActivity : ComponentActivity() {
                 // display list of scanned devices here
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(btManager.discoveredDevices) { device ->
-                        Text(
-                            text = "Device = $device",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                        )
+                        Button(onClick = {
+                            if (ActivityCompat.checkSelfPermission(
+                                    this@MainActivity,
+                                    Manifest.permission.BLUETOOTH_CONNECT
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+
+                            }
+                            Log.d("*********SATIS*********", "Device clicked: ${device.name} --- ${device.address}")
+                            btManager.connectToBtDevice(device = device)
+                        }) {
+                            Text(
+                                text = "Device = ${device.name} --- ${device.address}",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp)
+                            )
+                        }
                         Divider()
                     }
                 }
