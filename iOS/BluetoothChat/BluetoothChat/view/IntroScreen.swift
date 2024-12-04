@@ -9,12 +9,19 @@ import SwiftUI
 
 struct IntroScreen: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            VStack {
+                HStack {
+                    NavigationLink(destination: MainScreen()) {
+                        Text("Start server")
+                    }
+                    Spacer()
+                    NavigationLink(destination: MainScreen()) {
+                        Text("Start client")
+                    }
+                }
+            }
+            .padding()
         }
-        .padding()
     }
 }

@@ -14,6 +14,7 @@
 		203DDFCF2D008159003B16E9 /* BluetoothChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFCE2D008159003B16E9 /* BluetoothChatTests.swift */; };
 		203DDFD92D008159003B16E9 /* BluetoothChatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFD82D008159003B16E9 /* BluetoothChatUITests.swift */; };
 		203DDFDB2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFDA2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift */; };
+		203DDFE92D0083C6003B16E9 /* MainScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203DDFE82D0083C6003B16E9 /* MainScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		203DDFD42D008159003B16E9 /* BluetoothChatUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BluetoothChatUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		203DDFD82D008159003B16E9 /* BluetoothChatUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChatUITests.swift; sourceTree = "<group>"; };
 		203DDFDA2D008159003B16E9 /* BluetoothChatUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChatUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		203DDFE82D0083C6003B16E9 /* MainScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				203DDFBF2D008157003B16E9 /* IntroScreen.swift */,
+				203DDFE82D0083C6003B16E9 /* MainScreen.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				203DDFE92D0083C6003B16E9 /* MainScreen.swift in Sources */,
 				203DDFC02D008157003B16E9 /* IntroScreen.swift in Sources */,
 				203DDFBE2D008157003B16E9 /* BluetoothChatApp.swift in Sources */,
 			);
