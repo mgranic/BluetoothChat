@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
     fun MainScreenLayout(modifier: Modifier = Modifier) {
         //var devices by remember { mutableStateOf(listOf("device 1", "device 2")) }
         //val btManager by remember { mutableStateOf(BtManager(ctx = this, activity = this)) }
-        btManager.startBluetooth()
+        //btManager.startBluetooth()
 
         // Column layout to arrange text and button vertically
         Column(
@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Button to start scanning
                 Button(onClick = {
-                    print("******* START SCANNING ********")
+                    btManager.startBluetoothScan()
                     //devices = devices + "added device"
                 }) {
                     Text(text = "Start scanning")
@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
 
                 // Button to stop scanning
                 Button(onClick = {
-                    print("******* STOP SCANNING ********")
+                    btManager.stopBluetoothDiscovery()
                     //devices = devices - "added device"
                 }) {
                     Text(text = "Stop scanning")
