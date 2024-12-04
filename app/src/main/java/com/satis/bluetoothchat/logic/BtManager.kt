@@ -23,14 +23,14 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.core.app.ActivityCompat
-import java.util.UUID
 
 class BtManager(val ctx: Context, val activity: ComponentActivity) {
     // Observable list of discovered devices
     private val _discoveredDevices = mutableStateListOf<BluetoothDevice>()
     val discoveredDevices: SnapshotStateList<BluetoothDevice> = _discoveredDevices
 
-    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    private val btManager: BluetoothManager = ctx.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+    private val bluetoothAdapter: BluetoothAdapter? = btManager.adapter //BluetoothAdapter.getDefaultAdapter()
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
     // Define the activity result launcher
@@ -49,28 +49,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
             if (BluetoothDevice.ACTION_FOUND == action) {
                 val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
                 device?.let {
-                    val deviceName = if (ActivityCompat.checkSelfPermission(
-                            ctx,
-                            Manifest.permission.BLUETOOTH_CONNECT
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        "Unknown Device - No permission granted"
-                    } else {
-                        device.name ?: "Unknown Device"
-                    }
-                    //it.name ?: "Unknown Device"
-                    //val deviceAddress = it.address // MAC address
-                    //val deviceInfo = "$deviceName ($deviceAddress)"
-                    //if (!_discoveredDevices.contains(deviceInfo)) {
-                    //    _discoveredDevices.add(deviceInfo)
-                    //}
                     if (!_discoveredDevices.contains(device)) {
                         _discoveredDevices.add(device)
                     }
@@ -79,41 +57,12 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
         }
     }
 
-    // Register the BroadcastReceiver for device discovery
-    private val filter = IntentFilter().apply {
-        addAction(BluetoothDevice.ACTION_FOUND)
-        addAction(BluetoothDevice.ACTION_NAME_CHANGED)
-        addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
-    }
-
     init {
         requestPermissions()
     }
 
     fun startBluetoothScan() {
-        //requestPermissions()
-        //enableBluetooth()
-        startBluetoothDiscovery { devices ->
-            if (devices.isNotEmpty()) {
-                devices.forEach { device ->
-                    if (ActivityCompat.checkSelfPermission(
-                            ctx,
-                            Manifest.permission.BLUETOOTH_CONNECT
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-
-                    }
-                }
-            } else {
-            }
-        }
+        startBluetoothDiscovery()
     }
 
     private fun requestPermissions() {
@@ -165,11 +114,10 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
         if (!bluetoothAdapter.isEnabled) {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             enableBluetoothResultLauncher.launch(enableBtIntent) // Using the launcher to handle the result
-        } else {
         }
     }
 
-    private fun startBluetoothDiscovery(onDiscoveryComplete: (List<BluetoothDevice>) -> Unit) {
+    private fun startBluetoothDiscovery() {
         //val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
         if (bluetoothAdapter == null) {
@@ -183,13 +131,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                     Manifest.permission.BLUETOOTH_SCAN
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+                // missing permissions
                 return
             }
             bluetoothAdapter.cancelDiscovery() // Stop previous discovery if running
@@ -202,27 +144,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
         }
         activity.registerReceiver(receiver, filter)
 
-        // Start discovery
-        val started = if (ActivityCompat.checkSelfPermission(
-                ctx,
-                Manifest.permission.BLUETOOTH_SCAN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            false
-        } else {
-            true
-        }
         bluetoothAdapter.startDiscovery()
-        if (started) {
-        } else {
-        }
     }
 
     fun stopBluetoothDiscovery() {
@@ -232,13 +154,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                     Manifest.permission.BLUETOOTH_SCAN
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+                // missing permissions
                 return
             }
             bluetoothAdapter.cancelDiscovery() // Stop previous discovery if running
@@ -253,13 +169,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                 Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            // missing permissions
             return
         } else {
             device.type
@@ -286,8 +196,8 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
 
         try {
             // Cancel discovery to avoid interference
-            val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-            if (bluetoothAdapter.isDiscovering) {
+            //val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            if (bluetoothAdapter?.isDiscovering == true) {
                 bluetoothAdapter.cancelDiscovery()
             }
 
@@ -305,7 +215,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
             return
         }
 
-        val bluetoothGatt = device.connectGatt(ctx, false, object : BluetoothGattCallback() {
+        device.connectGatt(ctx, false, object : BluetoothGattCallback() {
             override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
                 super.onConnectionStateChange(gatt, status, newState)
                 if (newState == BluetoothGatt.STATE_CONNECTED) {
@@ -316,13 +226,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                             Manifest.permission.BLUETOOTH_CONNECT
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
+                        // missing permissions
                         return
                     }
                     gatt.discoverServices()

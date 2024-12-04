@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -127,14 +127,8 @@ class MainActivity : ComponentActivity() {
                                     Manifest.permission.BLUETOOTH_CONNECT
                                 ) != PackageManager.PERMISSION_GRANTED
                             ) {
-                                // TODO: Consider calling
-                                //    ActivityCompat#requestPermissions
-                                // here to request the missing permissions, and then overriding
-                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                //                                          int[] grantResults)
-                                // to handle the case where the user grants the permission. See the documentation
-                                // for ActivityCompat#requestPermissions for more details.
-
+                                // missing permissions
+                                return@Button
                             }
                             Log.d("*********SATIS*********", "Device clicked: ${device.name} --- ${device.address}")
                             btManager.connectToBtDevice(device = device)
@@ -146,7 +140,7 @@ class MainActivity : ComponentActivity() {
                                     .padding(vertical = 8.dp)
                             )
                         }
-                        Divider()
+                        HorizontalDivider()
                     }
                 }
             }
