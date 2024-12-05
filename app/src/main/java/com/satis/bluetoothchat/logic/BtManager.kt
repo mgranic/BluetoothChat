@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -23,6 +24,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.core.app.ActivityCompat
+import java.util.UUID
 
 class BtManager(val ctx: Context, val activity: ComponentActivity) {
     // Observable list of discovered devices
@@ -186,7 +188,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
             BluetoothDevice.DEVICE_TYPE_CLASSIC -> connectToClassicDevice(device)
             else -> Toast.makeText(ctx, "Unknown device type", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     private fun connectToClassicDevice(device: BluetoothDevice) {
@@ -227,15 +228,11 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                 if (newState == BluetoothGatt.STATE_CONNECTED) {
                     Log.d("****SATIS****", "Connected to GATT server on ${device.name}")
                     // Discover services
-                    if (ActivityCompat.checkSelfPermission(
-                            ctx,
-                            Manifest.permission.BLUETOOTH_CONNECT
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        // missing permissions
+                    if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                         return
                     }
                     gatt.discoverServices()
+                    Log.d("****SATIS****", "Discovering GATT services on ${device.name}")
                 } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                     Log.d("****SATIS****", "Disconnected from GATT server on ${device.name}")
                 }
@@ -245,12 +242,77 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                 super.onServicesDiscovered(gatt, status)
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     Log.d("****SATIS****", "Services discovered: ${gatt.services}")
+
+                    // Find the GAP service
+                    val gapService = gatt.getService(UUID.fromString("00001800-0000-1000-8000-00805f9b34fb"))
+                    if (gapService != null) {
+                        val deviceNameCharacteristic = gapService.getCharacteristic(UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb"))
+                        if (deviceNameCharacteristic != null) {
+                            // Read the Device Name characteristic
+                            if (ActivityCompat.checkSelfPermission(
+                                    ctx,
+                                    Manifest.permission.BLUETOOTH_CONNECT
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+                                return
+                            }
+                            gatt.readCharacteristic(deviceNameCharacteristic)
+                            Log.d("****SATIS****", "Reading Device Name characteristic")
+                        } else {
+                            Log.w("****SATIS****", "Device Name characteristic not found in GAP service")
+                        }
+                    } else {
+                        Log.w("****SATIS****", "GAP service not found")
+                    }
                 } else {
                     Log.w("****SATIS****", "Failed to discover services: $status")
+                }
+            }
+
+            override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
+                super.onCharacteristicRead(gatt, characteristic, status)
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    if (characteristic.uuid == UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")) {
+                        val deviceName = characteristic.value.toString(Charsets.UTF_8)
+                        Log.d("****SATIS****", "Device Name: $deviceName")
+                        activity.runOnUiThread {
+                            Toast.makeText(ctx, "Device Name: $deviceName response message", Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        Log.d("****SATIS****", "Read characteristic: ${characteristic.uuid}, value: ${characteristic.value}")
+                    }
+                } else {
+                    Log.w("****SATIS****", "Failed to read characteristic: ${characteristic.uuid}, status: $status")
+                }
+            }
+
+
+
+            @Deprecated("Deprecated in Java")
+            override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+                super.onCharacteristicChanged(gatt, characteristic)
+                val receivedData = characteristic.value.toString(Charsets.UTF_8)
+                Log.d("****SATIS****", "Data received: $receivedData")
+            }
+
+            override fun onCharacteristicWrite(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
+                super.onCharacteristicWrite(gatt, characteristic, status)
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    Log.d("****SATIS****", "Data successfully written to characteristic: ${characteristic.uuid}")
+                } else {
+                    Log.w("****SATIS****", "Failed to write to characteristic: ${characteristic.uuid}")
                 }
             }
         })
 
         Log.d("****SATIS****", "Attempting to connect to ${device.name} (${device.address})")
     }
+
 }
