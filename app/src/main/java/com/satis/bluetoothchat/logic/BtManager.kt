@@ -181,9 +181,9 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
             device.type
         }
         when (type) {
-            BluetoothDevice.DEVICE_TYPE_CLASSIC -> connectToClassicDevice(device)
             BluetoothDevice.DEVICE_TYPE_LE -> connectToLEDevice(device)
             BluetoothDevice.DEVICE_TYPE_DUAL -> connectToLEDevice(device)
+            BluetoothDevice.DEVICE_TYPE_CLASSIC -> connectToClassicDevice(device)
             else -> Toast.makeText(ctx, "Unknown device type", Toast.LENGTH_SHORT).show()
         }
 
