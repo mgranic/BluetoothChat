@@ -379,7 +379,9 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                 value: ByteArray
             ) {
                 val message = String(value, Charsets.UTF_8)
-                Log.d("************SATIS****************", "Received message: $message")
+                Log.d("************SATIS****************", "onCharacteristicWriteRequest Received message: $message")
+
+                Toast.makeText(ctx, "Bluetooth permissions are required", Toast.LENGTH_SHORT).show()
 
                 if (responseNeeded) {
                     if (ActivityCompat.checkSelfPermission(
