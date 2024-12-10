@@ -70,12 +70,12 @@ class MainActivity : ComponentActivity() {
                 //MainScreenLayout(modifier = Modifier.padding(innerPadding))
                 NavHost(
                     navController = navController,
-                    startDestination = "intro_screen",
+                    startDestination = "home_screen",
                     modifier = Modifier.padding(innerPadding)
                 ) {
-                    composable(route = "intro_screen") {
+                    /*composable(route = "intro_screen") {
                         IntroScreenLayout(modifier = Modifier.padding(innerPadding), navCont = navController)
-                    }
+                    }*/
                     composable(route = "home_screen") {
                         MainScreenLayout(modifier = Modifier.padding(innerPadding))
                     }
@@ -160,6 +160,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /*
     @Composable
     fun IntroScreenLayout(modifier: Modifier = Modifier, navCont: NavController) {
 
@@ -191,7 +192,7 @@ class MainActivity : ComponentActivity() {
 
             }
         }
-    }
+    } */
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable

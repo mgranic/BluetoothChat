@@ -87,6 +87,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
 
     init {
         requestPermissions()
+        startGattServer()
     }
 
     fun startBluetoothScan() {
