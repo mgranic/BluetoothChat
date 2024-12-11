@@ -13,6 +13,10 @@ import android.bluetooth.BluetoothGattServerCallback
 import android.bluetooth.BluetoothGattService
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
+import android.bluetooth.le.AdvertiseCallback
+import android.bluetooth.le.AdvertiseData
+import android.bluetooth.le.AdvertiseSettings
+import android.bluetooth.le.BluetoothLeAdvertiser
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
@@ -22,6 +26,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.ParcelUuid
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -54,6 +59,8 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
     private lateinit var bluetoothGattServer: BluetoothGattServer
+
+    private lateinit var advertiser: BluetoothLeAdvertiser
 
     // Define the activity result launcher
     private val enableBluetoothResultLauncher = activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -88,6 +95,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
     init {
         requestPermissions()
         startGattServer()
+        startBluetoothAdvertising()
     }
 
     fun startBluetoothScan() {
@@ -122,6 +130,9 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
         }
         if (activity.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             requiredPermissions.add(Manifest.permission.BLUETOOTH_CONNECT)
+        }
+        if (activity.checkSelfPermission(Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
+            requiredPermissions.add(Manifest.permission.BLUETOOTH_ADVERTISE)
         }
 
         if (requiredPermissions.isNotEmpty()) {
@@ -414,6 +425,65 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
         val serviceAdded = bluetoothGattServer.addService(service)
         Log.d("*******SATIS*******", "**************** Service added to GATT server: $serviceAdded **********************")
     }
+
+    fun startBluetoothAdvertising() {
+        val bluetoothManager = ctx.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val bluetoothAdapter = bluetoothManager.adapter
+
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
+            Log.e("*******SATIS*******", "Bluetooth is not enabled or not supported.")
+            return
+        }
+
+        //val advertiser = bluetoothAdapter.bluetoothLeAdvertiser
+        advertiser = bluetoothAdapter.bluetoothLeAdvertiser
+        if (advertiser == null) {
+            Log.e("*******SATIS*******", "BLE advertising is not supported on this device.")
+            return
+        }
+
+        // Define the advertising settings
+        val advertisingSettings = AdvertiseSettings.Builder()
+            .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+            .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+            .setConnectable(true)
+            .build()
+
+        // Define the advertising data
+        val advertisingData = AdvertiseData.Builder()
+            //.setIncludeDeviceName(true) // Include device name in advertising
+            .addServiceUuid(ParcelUuid(UUID.fromString("12345678-1234-5678-1234-567812345678"))) // Use the same service UUID as GATT server
+            .build()
+
+        // Start advertising
+        if (ActivityCompat.checkSelfPermission(
+                ctx,
+                Manifest.permission.BLUETOOTH_ADVERTISE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            Log.d("*******SATIS*******", "******** PERMISSION FAIL ****************")
+            return
+        }
+        Log.d("*******SATIS*******", "START advertising...")
+        advertiser.startAdvertising(advertisingSettings, advertisingData, object : AdvertiseCallback() {
+            override fun onStartSuccess(settingsInEffect: AdvertiseSettings) {
+                Log.d("*******SATIS*******", "Advertising started successfully.")
+            }
+
+            override fun onStartFailure(errorCode: Int) {
+                Log.e("*******SATIS*******", "Advertising failed to start. Error code: $errorCode")
+            }
+        })
+    }
+
+
 
     /*
     fun startGattClient() {
