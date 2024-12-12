@@ -41,9 +41,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotMutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import java.util.UUID
 
-class BtManager(val ctx: Context, val activity: ComponentActivity) {
+class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel() {
+    private val _navigationEvent = MutableSharedFlow<String>() // Emit route names
+    val navigationEvent = _navigationEvent.asSharedFlow()
+
+
+
     // Observable list of discovered devices
     private val _discoveredDevices = mutableStateListOf<BluetoothDevice>()
     val discoveredDevices: SnapshotStateList<BluetoothDevice> = _discoveredDevices
@@ -283,24 +293,9 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                         //val deviceNameCharacteristic = gapService.getCharacteristic(UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb"))
                         val deviceNameCharacteristic = getGattCharacteristic(gapService)
                         if (deviceNameCharacteristic != null) {
-                            // Read the Device Name characteristic
-                            //if (ActivityCompat.checkSelfPermission(
-                            //        ctx,
-                            //        Manifest.permission.BLUETOOTH_CONNECT
-                            //    ) != PackageManager.PERMISSION_GRANTED
-                            //) {
-                            //    // TODO: Consider calling
-                            //    //    ActivityCompat#requestPermissions
-                            //    // here to request the missing permissions, and then overriding
-                            //    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //    //                                          int[] grantResults)
-                            //    // to handle the case where the user grants the permission. See the documentation
-                            //    // for ActivityCompat#requestPermissions for more details.
-                            //    return
-                            //}
-                            //gatt.readCharacteristic(deviceNameCharacteristic)
                             readWriteGattService(gatt, deviceNameCharacteristic)
                             Log.d("****SATIS****", "Reading Device Name characteristic")
+                            navigateTo("chat_screen")
                         } else {
                             Log.w("****SATIS****", "Device Name characteristic not found in GAP service")
                         }
@@ -677,6 +672,12 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) {
                 gatt.writeCharacteristic(deviceNameCharacteristic)
             }
             else -> gatt.readCharacteristic(deviceNameCharacteristic)
+        }
+    }
+
+    fun navigateTo(route: String) {
+        viewModelScope.launch {
+            _navigationEvent.emit(route) // Emit navigation route
         }
     }
 
