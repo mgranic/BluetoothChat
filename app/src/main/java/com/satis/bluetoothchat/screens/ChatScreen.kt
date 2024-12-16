@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import com.satis.bluetoothchat.logic.SharedMessageManager
 import com.satis.bluetoothchat.model.Message
 
 //data class Message(val content: String, val isSentByMe: Boolean)
@@ -27,7 +28,7 @@ class ChatScreen {
     @Composable
     fun DisplayChatScreen() {
         var messageText by remember { mutableStateOf("") }
-        val messages = remember { mutableStateListOf<Message>() }
+        //val messages = remember { mutableStateListOf<Message>() }
 
         Column(
             modifier = Modifier
@@ -41,8 +42,8 @@ class ChatScreen {
                     .fillMaxWidth(),
                 reverseLayout = true // Newer messages at the bottom
             ) {
-                items(messages.size) { index ->
-                    val message = messages[messages.lastIndex - index] // Show newer messages at the bottom
+                items(SharedMessageManager.messages.size) { index ->
+                    val message = SharedMessageManager.messages[SharedMessageManager.messages.lastIndex - index] // Show newer messages at the bottom
                     ChatBubble(message)
                 }
             }
@@ -64,7 +65,7 @@ class ChatScreen {
                     keyboardActions = KeyboardActions(
                         onSend = {
                             if (messageText.isNotBlank()) {
-                                messages.add(Message(messageText, isSentByMe = true))
+                                SharedMessageManager.messages.add(Message(messageText, isSentByMe = true))
                                 messageText = ""
                             }
                         }
@@ -80,7 +81,7 @@ class ChatScreen {
                         .padding(12.dp)
                         .clickable {
                             if (messageText.isNotBlank()) {
-                                messages.add(Message(messageText, isSentByMe = true))
+                                SharedMessageManager.messages.add(Message(messageText, isSentByMe = true))
                                 messageText = ""
                             }
                         }

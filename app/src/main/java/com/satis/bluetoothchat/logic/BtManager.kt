@@ -43,6 +43,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.satis.bluetoothchat.model.Message
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -504,7 +505,11 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 offset: Int,
                 value: ByteArray
             ) {
-                Log.d("*******SATIS*******", "GATT SEVER Write request for characteristic: ${characteristic.uuid}")
+                Log.d("*******SATIS*******", "GATT SEVER Write request for characteristic ID: ${characteristic.uuid}")
+                Log.d("*******SATIS*******", "GATT SEVER Write request for characteristic VALUE: ${value.toString(Charsets.UTF_8)}")
+                if (value.toString(Charsets.UTF_8).isNotEmpty()) {
+                    SharedMessageManager.messages.add(Message(value.toString(Charsets.UTF_8), isSentByMe = false))
+                }
                 // Handle characteristic write request
             }
         })
@@ -667,6 +672,38 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
             "Write" ->  {
                 // Set the value to be written to the characteristic
                 val valueToSend = "Hello from the client side".toByteArray(Charsets.UTF_8)
+                deviceNameCharacteristic.value = valueToSend
+                deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                gatt.writeCharacteristic(deviceNameCharacteristic)
+            }
+            else -> gatt.readCharacteristic(deviceNameCharacteristic)
+        }
+    }
+
+    private fun readWriteGattService(gatt: BluetoothGatt, deviceNameCharacteristic: BluetoothGattCharacteristic, message: String) {
+        if (ActivityCompat.checkSelfPermission(
+                ctx,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        when (selectedOption.value) {
+            "Ping" -> gatt.readCharacteristic(deviceNameCharacteristic)
+            "Hello" ->  {
+                deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
+                gatt.readCharacteristic(deviceNameCharacteristic)
+            }
+            "Write" ->  {
+                // Set the value to be written to the characteristic
+                val valueToSend = message.toByteArray(Charsets.UTF_8)
                 deviceNameCharacteristic.value = valueToSend
                 deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                 gatt.writeCharacteristic(deviceNameCharacteristic)
