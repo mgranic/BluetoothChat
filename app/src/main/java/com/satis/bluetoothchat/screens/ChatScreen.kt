@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import com.satis.bluetoothchat.logic.BtManager
 import com.satis.bluetoothchat.logic.SharedMessageManager
 import com.satis.bluetoothchat.model.Message
 
@@ -26,7 +27,7 @@ import com.satis.bluetoothchat.model.Message
 
 class ChatScreen {
     @Composable
-    fun DisplayChatScreen() {
+    fun DisplayChatScreen(btManager: BtManager) {
         var messageText by remember { mutableStateOf("") }
         //val messages = remember { mutableStateListOf<Message>() }
 
@@ -82,6 +83,7 @@ class ChatScreen {
                         .clickable {
                             if (messageText.isNotBlank()) {
                                 SharedMessageManager.messages.add(Message(messageText, isSentByMe = true))
+                                btManager.writeGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!, message = messageText)
                                 messageText = ""
                             }
                         }

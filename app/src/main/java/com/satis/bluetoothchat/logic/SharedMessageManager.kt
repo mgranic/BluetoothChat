@@ -1,5 +1,7 @@
 package com.satis.bluetoothchat.logic
 
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCharacteristic
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.satis.bluetoothchat.model.Message
@@ -10,6 +12,9 @@ object SharedMessageManager {
     // Backing property for the messages list
     private val _messages = mutableStateListOf<Message>()
     val messages: SnapshotStateList<Message> = _messages
+
+    lateinit var gatt: BluetoothGatt
+    lateinit var deviceNameCharacteristic: BluetoothGattCharacteristic
 
     @Synchronized
     fun addMessage(message: Message) {

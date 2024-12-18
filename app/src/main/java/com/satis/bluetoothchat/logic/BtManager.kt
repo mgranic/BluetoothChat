@@ -295,6 +295,8 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                         val deviceNameCharacteristic = getGattCharacteristic(gapService)
                         if (deviceNameCharacteristic != null) {
                             readWriteGattService(gatt, deviceNameCharacteristic)
+                            SharedMessageManager.gatt = gatt
+                            SharedMessageManager.deviceNameCharacteristic = deviceNameCharacteristic
                             Log.d("****SATIS****", "Reading Device Name characteristic")
                             navigateTo("chat_screen")
                         } else {
@@ -680,7 +682,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
         }
     }
 
-    private fun readWriteGattService(gatt: BluetoothGatt, deviceNameCharacteristic: BluetoothGattCharacteristic, message: String) {
+    fun writeGattService(gatt: BluetoothGatt, deviceNameCharacteristic: BluetoothGattCharacteristic, message: String) {
         if (ActivityCompat.checkSelfPermission(
                 ctx,
                 Manifest.permission.BLUETOOTH_CONNECT
@@ -695,21 +697,11 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        when (selectedOption.value) {
-            "Ping" -> gatt.readCharacteristic(deviceNameCharacteristic)
-            "Hello" ->  {
-                deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
-                gatt.readCharacteristic(deviceNameCharacteristic)
-            }
-            "Write" ->  {
-                // Set the value to be written to the characteristic
-                val valueToSend = message.toByteArray(Charsets.UTF_8)
-                deviceNameCharacteristic.value = valueToSend
-                deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-                gatt.writeCharacteristic(deviceNameCharacteristic)
-            }
-            else -> gatt.readCharacteristic(deviceNameCharacteristic)
-        }
+        // Set the value to be written to the characteristic
+        val valueToSend = message.toByteArray(Charsets.UTF_8)
+        deviceNameCharacteristic.value = valueToSend
+        deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+        gatt.writeCharacteristic(deviceNameCharacteristic)
     }
 
     fun navigateTo(route: String) {

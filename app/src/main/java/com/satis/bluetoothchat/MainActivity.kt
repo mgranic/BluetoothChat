@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.padding(innerPadding)
                 ) {
                     composable(route = "chat_screen") {
-                        chatScreen.DisplayChatScreen()
+                        chatScreen.DisplayChatScreen(btManager = btManager)
                     }
                     composable(route = "home_screen") {
                         MainScreenLayout(modifier = Modifier.padding(innerPadding), navCont = navController)
