@@ -47,12 +47,15 @@ import com.satis.bluetoothchat.model.Message
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import java.util.Timer
+import java.util.TimerTask
 import java.util.UUID
 
 class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel() {
     private val _navigationEvent = MutableSharedFlow<String>() // Emit route names
     val navigationEvent = _navigationEvent.asSharedFlow()
 
+    private val timer = Timer()
 
 
     // Observable list of discovered devices
@@ -110,6 +113,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     }
 
     fun startBluetoothScan() {
+        _discoveredDevices.clear()
         startBluetoothDiscovery()
     }
 
@@ -297,6 +301,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                             readWriteGattService(gatt, deviceNameCharacteristic)
                             SharedMessageManager.gatt = gatt
                             SharedMessageManager.deviceNameCharacteristic = deviceNameCharacteristic
+                            startKeepAlive()
                             Log.d("****SATIS****", "Reading Device Name characteristic")
                             navigateTo("chat_screen")
                         } else {
@@ -317,9 +322,9 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                     if (characteristic.uuid == UUID.fromString(getGattCharacteristicUUIDString())) {
                         val deviceName = characteristic.value.toString(Charsets.UTF_8)
                         Log.d("****SATIS****", "Device Name: $deviceName")
-                        activity.runOnUiThread {
-                            Toast.makeText(ctx, "Device Name: $deviceName response message", Toast.LENGTH_LONG).show()
-                        }
+                        //activity.runOnUiThread {
+                        //    Toast.makeText(ctx, "Device Name: $deviceName response message", Toast.LENGTH_LONG).show()
+                        //}
                     } else {
                         Log.d("****SATIS****", "Read characteristic: ${characteristic.uuid}, value: ${characteristic.value}")
                     }
@@ -708,6 +713,22 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
         viewModelScope.launch {
             _navigationEvent.emit(route) // Emit navigation route
         }
+    }
+
+    fun startKeepAlive() {
+        timer.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                sendKeepAliveMessage()
+            }
+        }, 0, 1000) // Initial delay = 0, period = 5000 ms (5 seconds)
+    }
+
+    fun stopKeepAlive() {
+        timer.cancel()
+    }
+
+    private fun sendKeepAliveMessage() {
+        readWriteGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
     }
 
 }
