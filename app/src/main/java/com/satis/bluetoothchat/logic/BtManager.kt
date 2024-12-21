@@ -528,8 +528,8 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     }
 
     fun startBluetoothAdvertising() {
-        val bluetoothManager = ctx.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        val bluetoothAdapter = bluetoothManager.adapter
+        //val bluetoothManager = ctx.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        //val bluetoothAdapter = bluetoothManager.adapter
 
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
             Log.e("*******SATIS*******", "Bluetooth is not enabled or not supported.")
@@ -538,10 +538,10 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
 
         //val advertiser = bluetoothAdapter.bluetoothLeAdvertiser
         advertiser = bluetoothAdapter.bluetoothLeAdvertiser
-        if (advertiser == null) {
-            Log.e("*******SATIS*******", "BLE advertising is not supported on this device.")
-            return
-        }
+        //if (advertiser == null) {
+        //    Log.e("*******SATIS*******", "BLE advertising is not supported on this device.")
+        //    return
+        //}
 
         // Define the advertising settings
         val advertisingSettings = AdvertiseSettings.Builder()
