@@ -45,6 +45,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.satis.bluetoothchat.logic.BtManager
+import com.satis.bluetoothchat.logic.SharedMessageManager
 import com.satis.bluetoothchat.screens.ChatScreen
 import com.satis.bluetoothchat.ui.theme.BluetoothChatTheme
 
@@ -75,9 +76,12 @@ class MainActivity : ComponentActivity() {
                 //MainScreenLayout(modifier = Modifier.padding(innerPadding))
                 NavHost(
                     navController = navController,
-                    startDestination = "home_screen",
+                    startDestination = "intro_screen",
                     modifier = Modifier.padding(innerPadding)
                 ) {
+                    composable(route = "intro_screen") {
+                        IntroScreenLayout(modifier = Modifier.padding(innerPadding), navCont = navController)
+                    }
                     composable(route = "chat_screen") {
                         chatScreen.DisplayChatScreen(btManager = btManager)
                     }
@@ -175,10 +179,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /*
     @Composable
     fun IntroScreenLayout(modifier: Modifier = Modifier, navCont: NavController) {
-
+        //SharedMessageManager.isServerMode = mutableStateOf(false)
         // Column layout to arrange text and button vertically
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -207,7 +210,7 @@ class MainActivity : ComponentActivity() {
 
             }
         }
-    } */
+    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable

@@ -83,7 +83,10 @@ class ChatScreen {
                         .clickable {
                             if (messageText.isNotBlank()) {
                                 SharedMessageManager.messages.add(Message(messageText, isSentByMe = true))
-                                btManager.writeGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!, message = messageText)
+                                if (SharedMessageManager.isServerMode == false) {
+                                    btManager.writeGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!, message = messageText)
+                                }
+
                                 messageText = ""
                             }
                         }
