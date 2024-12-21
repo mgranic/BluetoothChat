@@ -321,7 +321,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                     //if (characteristic.uuid == UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")) {
                     if (characteristic.uuid == UUID.fromString(getGattCharacteristicUUIDString())) {
                         val deviceName = characteristic.value.toString(Charsets.UTF_8)
-                        Log.d("****SATIS****", "Device Name: $deviceName")
+                        //Log.d("****SATIS****", "Device Name: $deviceName")
                         //activity.runOnUiThread {
                         //    Toast.makeText(ctx, "Device Name: $deviceName response message", Toast.LENGTH_LONG).show()
                         //}
@@ -363,7 +363,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
         // Create the characteristic
         val characteristic = BluetoothGattCharacteristic(
             characteristicUuid,
-            BluetoothGattCharacteristic.PROPERTY_WRITE,
+            BluetoothGattCharacteristic.PROPERTY_WRITE  or BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE,
             BluetoothGattCharacteristic.PERMISSION_WRITE
         )
 
@@ -680,7 +680,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 // Set the value to be written to the characteristic
                 val valueToSend = "Hello from the client side".toByteArray(Charsets.UTF_8)
                 deviceNameCharacteristic.value = valueToSend
-                deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE //BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                 gatt.writeCharacteristic(deviceNameCharacteristic)
             }
             else -> gatt.readCharacteristic(deviceNameCharacteristic)
