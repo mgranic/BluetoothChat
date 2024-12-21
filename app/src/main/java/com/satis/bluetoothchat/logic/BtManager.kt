@@ -282,7 +282,8 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                     gatt.discoverServices()
                     Log.d("****SATIS****", "Discovering GATT services on ${device.name}")
                 } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
-                    Log.d("****SATIS****", "Disconnected from GATT server on ${device.name}")
+                    Log.d("****SATIS****", "Disconnected from GATT server on ${device.name}, attempting to reconnect ...")
+                    connectToBtDevice(device)
                 }
             }
 
@@ -301,7 +302,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                             readWriteGattService(gatt, deviceNameCharacteristic)
                             SharedMessageManager.gatt = gatt
                             SharedMessageManager.deviceNameCharacteristic = deviceNameCharacteristic
-                            startKeepAlive()
+                            //startKeepAlive()
                             Log.d("****SATIS****", "Reading Device Name characteristic")
                             navigateTo("chat_screen")
                         } else {
