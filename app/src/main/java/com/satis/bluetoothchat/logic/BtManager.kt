@@ -57,6 +57,8 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
 
     private val timer = Timer()
 
+    private var sendRead = true
+
 
     // Observable list of discovered devices
     private val _discoveredDevices = mutableStateListOf<BluetoothDevice>()
@@ -667,7 +669,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
             override fun run() {
                 sendKeepAliveMessage()
             }
-        }, 0, 1000) // Initial delay = 0, period = 5000 ms (5 seconds)
+        }, 0, 2000) // Initial delay = 0, period = 5000 ms (5 seconds)
     }
 
     fun stopKeepAlive() {
@@ -675,7 +677,13 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     }
 
     private fun sendKeepAliveMessage() {
-        readWriteGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
+        if (sendRead == true) {
+            sendRead = false
+            readWriteGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
+        } else {
+            sendRead = true
+            writeGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!, message = "testna poruka")
+        }
     }
 
     fun stopBluetoothAdvertising() {
