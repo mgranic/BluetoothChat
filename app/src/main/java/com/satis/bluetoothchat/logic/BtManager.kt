@@ -298,12 +298,15 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
 
                     // Find the GAP service
                     //val gapService = gatt.getService(UUID.fromString("00001800-0000-1000-8000-00805f9b34fb"))
-                    val gapService = getGattService(gatt)
+                    //val gapService = getGattService(gatt)
+                    val gapService = gatt.getService(UUID.fromString("12345678-1234-5678-1234-567812345678"))
                     if (gapService != null) {
                         //val deviceNameCharacteristic = gapService.getCharacteristic(UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb"))
-                        val deviceNameCharacteristic = getGattCharacteristic(gapService)
+                        //val deviceNameCharacteristic = getGattCharacteristic(gapService)
+                        val deviceNameCharacteristic = gapService.getCharacteristic(UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6"))
                         if (deviceNameCharacteristic != null) {
-                            readWriteGattService(gatt, deviceNameCharacteristic)
+                            //readWriteGattService(gatt, deviceNameCharacteristic)
+                            readGattService(gatt, deviceNameCharacteristic)
                             SharedMessageManager.gatt = gatt
                             SharedMessageManager.deviceNameCharacteristic = deviceNameCharacteristic
                             startKeepAlive()
@@ -324,7 +327,8 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 super.onCharacteristicRead(gatt, characteristic, status)
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     //if (characteristic.uuid == UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")) {
-                    if (characteristic.uuid == UUID.fromString(getGattCharacteristicUUIDString())) {
+                    //if (characteristic.uuid == UUID.fromString(getGattCharacteristicUUIDString())) {
+                    if(characteristic.uuid == UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6")) {
                         val readResponse = characteristic.value.toString(Charsets.UTF_8)
                         Log.d("****SATIS****", "Read response: $readResponse")
                         if (readResponse.isNotEmpty() && SharedMessageManager.isServerMode == false) {
@@ -654,6 +658,25 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
         gatt.writeCharacteristic(deviceNameCharacteristic)
     }
 
+    fun readGattService(gatt: BluetoothGatt, deviceNameCharacteristic: BluetoothGattCharacteristic) {
+        if (ActivityCompat.checkSelfPermission(
+                ctx,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
+        gatt.readCharacteristic(deviceNameCharacteristic)
+    }
+
     fun navigateTo(route: String) {
         viewModelScope.launch {
             _navigationEvent.emit(route) // Emit navigation route
@@ -669,7 +692,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
             override fun run() {
                 sendKeepAliveMessage()
             }
-        }, 0, 2000) // Initial delay = 0, period = 5000 ms (5 seconds)
+        }, 0, 7000) // Initial delay = 0, period = 5000 ms (5 seconds)
     }
 
     fun stopKeepAlive() {
@@ -679,7 +702,8 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     private fun sendKeepAliveMessage() {
         if (sendRead == true) {
             sendRead = false
-            readWriteGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
+            //readWriteGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
+            readGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
         } else {
             sendRead = true
             writeGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!, message = "testna poruka")
