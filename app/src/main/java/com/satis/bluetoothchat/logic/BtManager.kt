@@ -112,7 +112,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
 
     init {
         requestPermissions()
-        //startGattServer()
+        startGattServer()
         //startBluetoothAdvertising()
     }
 
@@ -325,13 +325,15 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
 
             override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
                 super.onCharacteristicRead(gatt, characteristic, status)
+                Log.d("****SATIS****", "Read response: EXECUTED *********")
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     //if (characteristic.uuid == UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")) {
                     //if (characteristic.uuid == UUID.fromString(getGattCharacteristicUUIDString())) {
                     if(characteristic.uuid == UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6")) {
                         val readResponse = characteristic.value.toString(Charsets.UTF_8)
                         Log.d("****SATIS****", "Read response: $readResponse")
-                        if (readResponse.isNotEmpty() && SharedMessageManager.isServerMode == false) {
+                        //if (readResponse.isNotEmpty() && SharedMessageManager.isServerMode == false) {
+                        if (readResponse.isNotEmpty()) {
                             SharedMessageManager.messages.add(Message(readResponse, isSentByMe = false))
                         }
                         //activity.runOnUiThread {
@@ -441,7 +443,11 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 // Example: Handle a specific characteristic
                 if (characteristic.uuid == UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6")) {
                     // Provide the value for the characteristic
-                    val responseValue = "Hello from GATT Server!".toByteArray(Charsets.UTF_8)
+                    var responseValue = "".toByteArray(Charsets.UTF_8)
+
+                    if (SharedMessageManager.outgoingMessages.isNotEmpty()) {
+                        responseValue = SharedMessageManager.outgoingMessages.removeAt(0).content.toByteArray(Charsets.UTF_8)
+                    }
 
                     // If the offset is beyond the data size, return an error response
                     if (offset > responseValue.size) {
@@ -685,9 +691,9 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
 
     fun startKeepAlive() {
         // start timer only in client mode
-        if (SharedMessageManager.isServerMode == true) {
-            return
-        }
+        //if (SharedMessageManager.isServerMode == true) {
+        //    return
+        //}
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 sendKeepAliveMessage()
@@ -700,14 +706,14 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     }
 
     private fun sendKeepAliveMessage() {
-        if (sendRead == true) {
-            sendRead = false
+        //if (sendRead == true) {
+        //    sendRead = false
             //readWriteGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
             readGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
-        } else {
-            sendRead = true
-            writeGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!, message = "testna poruka")
-        }
+        //} else {
+        //    sendRead = true
+        //    writeGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!, message = "testna poruka")
+        //}
     }
 
     fun stopBluetoothAdvertising() {

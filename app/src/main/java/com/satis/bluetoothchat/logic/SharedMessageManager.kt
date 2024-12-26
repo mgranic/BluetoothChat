@@ -14,6 +14,10 @@ object SharedMessageManager {
     private val _messages = mutableStateListOf<Message>()
     val messages: SnapshotStateList<Message> = _messages
 
+    //private val _outgoingMessages = mutableStateListOf<Message>()
+    //val outgoingMessages: SnapshotStateList<Message> = _outgoingMessages
+    val outgoingMessages = mutableStateListOf<Message>()
+
     lateinit var gatt: BluetoothGatt
     lateinit var deviceNameCharacteristic: BluetoothGattCharacteristic
 
