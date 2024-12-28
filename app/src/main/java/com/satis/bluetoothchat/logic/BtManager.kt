@@ -238,7 +238,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
             BluetoothDevice.DEVICE_TYPE_LE -> connectToLEDevice(device)
             BluetoothDevice.DEVICE_TYPE_DUAL -> connectToLEDevice(device)
             BluetoothDevice.DEVICE_TYPE_CLASSIC -> connectToClassicDevice(device)
-            else -> Toast.makeText(ctx, "Unknown device type", Toast.LENGTH_SHORT).show()
+            else -> connectToLEDevice(device) //Toast.makeText(ctx, "Unknown device type", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -421,6 +421,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
             override fun onConnectionStateChange(device: BluetoothDevice, status: Int, newState: Int) {
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     Log.d("*******SATIS*******", "GATT SEVER Device connected: ${device.address}")
+                    connectToBtDevice(device)
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                     Log.d("*******SATIS*******", "GATT SEVER Device disconnected: ${device.address}")
                     //stopBluetoothAdvertising()
