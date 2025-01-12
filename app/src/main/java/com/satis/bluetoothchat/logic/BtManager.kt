@@ -17,28 +17,20 @@ import android.bluetooth.le.AdvertiseCallback
 import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
 import android.bluetooth.le.BluetoothLeAdvertiser
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
-import android.bluetooth.le.ScanSettings
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
-import android.os.ParcelUuid
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotMutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
@@ -57,21 +49,15 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
 
     private val timer = Timer()
 
-    private var sendRead = true
-
 
     // Observable list of discovered devices
     private val _discoveredDevices = mutableStateListOf<BluetoothDevice>()
     val discoveredDevices: SnapshotStateList<BluetoothDevice> = _discoveredDevices
 
     var selectedOption = mutableStateOf("Select an Option")
-    //private val _selectedOption = mutableStateOf("Select an Option")
-    //val selectedOption: SnapshotMutableState<String> = _selectedOption
-
-    //var selectedOption : SnapshotMutableState<String> = mutableStateOf("Select an Option")
 
     private val btManager: BluetoothManager = ctx.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-    private val bluetoothAdapter: BluetoothAdapter? = btManager.adapter //BluetoothAdapter.getDefaultAdapter()
+    private val bluetoothAdapter: BluetoothAdapter? = btManager.adapter
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
     private lateinit var bluetoothGattServer: BluetoothGattServer
@@ -177,8 +163,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     }
 
     private fun startBluetoothDiscovery() {
-        //val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-
         if (bluetoothAdapter == null) {
             Toast.makeText(ctx, "Bluetooth is not supported", Toast.LENGTH_SHORT).show()
             return
@@ -234,37 +218,11 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
         } else {
             device.type
         }
+        // check device type
         when (type) {
             BluetoothDevice.DEVICE_TYPE_LE -> connectToLEDevice(device)
             BluetoothDevice.DEVICE_TYPE_DUAL -> connectToLEDevice(device)
-            BluetoothDevice.DEVICE_TYPE_CLASSIC -> connectToClassicDevice(device)
-            else -> connectToLEDevice(device) //Toast.makeText(ctx, "Unknown device type", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun connectToClassicDevice(device: BluetoothDevice) {
-        // Ensure Bluetooth permissions
-        if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("****SATIS****", "Bluetooth CONNECT permission is missing.")
-            return
-        }
-
-        // Common UUID for serial communication
-        val uuid = device.uuids?.firstOrNull()?.uuid ?: return
-        val bluetoothSocket = device.createRfcommSocketToServiceRecord(uuid)
-
-        try {
-            // Cancel discovery to avoid interference
-            //val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-            if (bluetoothAdapter?.isDiscovering == true) {
-                bluetoothAdapter.cancelDiscovery()
-            }
-
-            // Connect to the device
-            bluetoothSocket.connect()
-            Log.d("****SATIS****", "Connected to ${device.name} (${device.address})")
-        } catch (e: Exception) {
-            Log.e("****SATIS****", "Failed to connect: ${e.message}")
+            else -> Toast.makeText(ctx, "Unknown device type", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -297,19 +255,14 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                     Log.d("****SATIS****", "Services discovered: ${gatt.services}")
 
                     // Find the GAP service
-                    //val gapService = gatt.getService(UUID.fromString("00001800-0000-1000-8000-00805f9b34fb"))
-                    //val gapService = getGattService(gatt)
                     val gapService = gatt.getService(UUID.fromString("12345678-1234-5678-1234-567812345678"))
                     if (gapService != null) {
-                        //val deviceNameCharacteristic = gapService.getCharacteristic(UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb"))
-                        //val deviceNameCharacteristic = getGattCharacteristic(gapService)
                         val deviceNameCharacteristic = gapService.getCharacteristic(UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6"))
                         if (deviceNameCharacteristic != null) {
-                            //readWriteGattService(gatt, deviceNameCharacteristic)
                             readGattService(gatt, deviceNameCharacteristic)
                             SharedMessageManager.gatt = gatt
                             SharedMessageManager.deviceNameCharacteristic = deviceNameCharacteristic
-                            startKeepAlive()
+                            startCommunicationTimer()
                             Log.d("****SATIS****", "Reading Device Name characteristic")
                             navigateTo("chat_screen")
                         } else {
@@ -327,18 +280,12 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 super.onCharacteristicRead(gatt, characteristic, status)
                 Log.d("****SATIS****", "Read response: EXECUTED *********")
                 if (status == BluetoothGatt.GATT_SUCCESS) {
-                    //if (characteristic.uuid == UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")) {
-                    //if (characteristic.uuid == UUID.fromString(getGattCharacteristicUUIDString())) {
                     if(characteristic.uuid == UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6")) {
                         val readResponse = characteristic.value.toString(Charsets.UTF_8)
                         Log.d("****SATIS****", "Read response: $readResponse")
-                        //if (readResponse.isNotEmpty() && SharedMessageManager.isServerMode == false) {
                         if (readResponse.isNotEmpty()) {
                             SharedMessageManager.messages.add(Message(readResponse, isSentByMe = false))
                         }
-                        //activity.runOnUiThread {
-                        //    Toast.makeText(ctx, "Device Name: $deviceName response message", Toast.LENGTH_LONG).show()
-                        //}
                     } else {
                         Log.d("****SATIS****", "Read characteristic: ${characteristic.uuid}, value: ${characteristic.value}")
                     }
@@ -374,15 +321,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
         // Define a custom UUID for the service and characteristic
         val serviceUuid = UUID.fromString("12345678-1234-5678-1234-567812345678")
         val characteristicUuid = UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6")
-
-        val message = "Hello from the server side!"
-
-        // Create the characteristic
-        //val characteristic = BluetoothGattCharacteristic(
-        //    characteristicUuid,
-        //    BluetoothGattCharacteristic.PROPERTY_WRITE  or BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE,
-        //    BluetoothGattCharacteristic.PERMISSION_WRITE
-        //)
 
         // Create the characteristic
         val characteristic = BluetoothGattCharacteristic(
@@ -435,11 +373,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 characteristic: BluetoothGattCharacteristic
             ) {
                 Log.d("*******SATIS*******", "GATT SEVER Read request for characteristic: ${characteristic.uuid}")
-
-                //var readValue = "no message"
-                //if (SharedMessageManager.messages.isNotEmpty()) {
-                //    readValue = SharedMessageManager.messages.removeAt(0).content
-                //}
 
                 // Example: Handle a specific characteristic
                 if (characteristic.uuid == UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6")) {
@@ -525,9 +458,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     }
 
     fun startBluetoothAdvertising() {
-        //val bluetoothManager = ctx.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        //val bluetoothAdapter = bluetoothManager.adapter
-
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
             Log.e("*******SATIS*******", "Bluetooth is not enabled or not supported.")
             return
@@ -535,10 +465,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
 
         //val advertiser = bluetoothAdapter.bluetoothLeAdvertiser
         advertiser = bluetoothAdapter.bluetoothLeAdvertiser
-        //if (advertiser == null) {
-        //    Log.e("*******SATIS*******", "BLE advertising is not supported on this device.")
-        //    return
-        //}
 
         // Define the advertising settings
         val advertisingSettings = AdvertiseSettings.Builder()
@@ -552,7 +478,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
         // Define the advertising data
         val advertisingData = AdvertiseData.Builder()
             .setIncludeDeviceName(true) // Include device name in advertising
-            //.addServiceUuid(ParcelUuid(UUID.fromString("12345678-1234-5678-1234-567812345678"))) // Use the same service UUID as GATT server
             .build()
 
         // Start advertising
@@ -584,87 +509,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
         })
     }
 
-    private fun getGattService(gatt: BluetoothGatt): BluetoothGattService {
-        when (selectedOption.value) {
-            "Ping" -> return gatt.getService(UUID.fromString("00001800-0000-1000-8000-00805f9b34fb"))
-            "Hello" -> return gatt.getService(UUID.fromString("12345678-1234-5678-1234-567812345678"))
-            "Write" -> return gatt.getService(UUID.fromString("12345678-1234-5678-1234-567812345678"))
-            else -> return gatt.getService(UUID.fromString("00001800-0000-1000-8000-00805f9b34fb"))
-        }
-    }
-
-    private fun getGattCharacteristic(gapService: BluetoothGattService): BluetoothGattCharacteristic {
-        when (selectedOption.value) {
-            "Ping" -> return gapService.getCharacteristic(UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb"))
-            "Hello" -> return gapService.getCharacteristic(UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6"))
-            "Write" -> return gapService.getCharacteristic(UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6"))
-            else -> return gapService.getCharacteristic(UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb"))
-        }
-    }
-
-    private fun getGattCharacteristicUUIDString(): String {
-        when (selectedOption.value) {
-            "Ping" -> return "00002a00-0000-1000-8000-00805f9b34fb"
-            "Hello" -> return "a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6"
-            "Write" -> return "a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6"
-            else -> return "00002a00-0000-1000-8000-00805f9b34fb"
-        }
-    }
-
-    private fun readWriteGattService(gatt: BluetoothGatt, deviceNameCharacteristic: BluetoothGattCharacteristic) {
-        if (ActivityCompat.checkSelfPermission(
-                ctx,
-                Manifest.permission.BLUETOOTH_CONNECT
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        when (selectedOption.value) {
-            "Ping" -> gatt.readCharacteristic(deviceNameCharacteristic)
-            "Hello" ->  {
-                deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
-                gatt.readCharacteristic(deviceNameCharacteristic)
-            }
-            "Write" ->  {
-                // Set the value to be written to the characteristic
-                val valueToSend = "Hello from the client side".toByteArray(Charsets.UTF_8)
-                deviceNameCharacteristic.value = valueToSend
-                deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE //BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-                gatt.writeCharacteristic(deviceNameCharacteristic)
-            }
-            else -> gatt.readCharacteristic(deviceNameCharacteristic)
-        }
-    }
-
-    fun writeGattService(gatt: BluetoothGatt, deviceNameCharacteristic: BluetoothGattCharacteristic, message: String) {
-        if (ActivityCompat.checkSelfPermission(
-                ctx,
-                Manifest.permission.BLUETOOTH_CONNECT
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        // Set the value to be written to the characteristic
-        val valueToSend = message.toByteArray(Charsets.UTF_8)
-        deviceNameCharacteristic.value = valueToSend
-        deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-        gatt.writeCharacteristic(deviceNameCharacteristic)
-    }
-
     fun readGattService(gatt: BluetoothGatt, deviceNameCharacteristic: BluetoothGattCharacteristic) {
         if (ActivityCompat.checkSelfPermission(
                 ctx,
@@ -690,11 +534,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
         }
     }
 
-    fun startKeepAlive() {
-        // start timer only in client mode
-        //if (SharedMessageManager.isServerMode == true) {
-        //    return
-        //}
+    fun startCommunicationTimer() {
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 sendKeepAliveMessage()
@@ -707,14 +547,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     }
 
     private fun sendKeepAliveMessage() {
-        //if (sendRead == true) {
-        //    sendRead = false
-            //readWriteGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
-            readGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
-        //} else {
-        //    sendRead = true
-        //    writeGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!, message = "testna poruka")
-        //}
+        readGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
     }
 
     fun stopBluetoothAdvertising() {
