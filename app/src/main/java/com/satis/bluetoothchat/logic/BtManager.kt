@@ -535,11 +535,11 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     }
 
     fun startCommunicationTimer() {
-        timer.scheduleAtFixedRate(object : TimerTask() {
+        timer.schedule(object : TimerTask() {
             override fun run() {
                 sendKeepAliveMessage()
             }
-        }, 0, 7000) // Initial delay = 0, period = 5000 ms (5 seconds)
+        }, 0, 7000) // Initial delay = 0, period = 7000 ms (7 seconds)
     }
 
     fun stopKeepAlive() {
