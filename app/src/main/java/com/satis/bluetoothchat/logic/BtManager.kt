@@ -54,8 +54,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     private val _discoveredDevices = mutableStateListOf<BluetoothDevice>()
     val discoveredDevices: SnapshotStateList<BluetoothDevice> = _discoveredDevices
 
-    var selectedOption = mutableStateOf("Select an Option")
-
     private val btManager: BluetoothManager = ctx.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     private val bluetoothAdapter: BluetoothAdapter? = btManager.adapter
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
@@ -207,7 +205,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     }
 
     fun connectToBtDevice(device: BluetoothDevice) {
-        Log.d("****SATIS****", "selectedOption is ${selectedOption.value}")
         val type = if (ActivityCompat.checkSelfPermission(
                 ctx,
                 Manifest.permission.BLUETOOTH_CONNECT
