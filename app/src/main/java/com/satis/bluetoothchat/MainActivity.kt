@@ -133,7 +133,6 @@ class MainActivity : ComponentActivity() {
                                 // missing permissions
                                 return@Button
                             }
-                            Log.d("*********SATIS*********", "Device clicked: ${device.name} --- ${device.address}")
                             btManager.connectToBtDevice(device = device)
                         }) {
                             Text(

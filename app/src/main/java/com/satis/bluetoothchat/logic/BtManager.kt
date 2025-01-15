@@ -49,6 +49,9 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
 
     private val timer = Timer()
 
+    private lateinit var _gatt: BluetoothGatt
+    private lateinit var _deviceNameCharacteristic: BluetoothGattCharacteristic
+
 
     // Observable list of discovered devices
     private val _discoveredDevices = mutableStateListOf<BluetoothDevice>()
@@ -97,7 +100,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
     init {
         requestPermissions()
         startGattServer()
-        //startBluetoothAdvertising()
     }
 
     fun startBluetoothScan() {
@@ -225,7 +227,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
 
     private fun connectToLEDevice(device: BluetoothDevice) {
         if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("****SATIS****", "Bluetooth CONNECT permission is missing.")
+            // missing permission
             return
         }
 
@@ -233,15 +235,14 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
             override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
                 super.onConnectionStateChange(gatt, status, newState)
                 if (newState == BluetoothGatt.STATE_CONNECTED) {
-                    Log.d("****SATIS****", "Connected to GATT server on ${device.name}")
                     // Discover services
                     if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        // missing permission
                         return
                     }
                     gatt.discoverServices()
-                    Log.d("****SATIS****", "Discovering GATT services on ${device.name}")
                 } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
-                    Log.d("****SATIS****", "Disconnected from GATT server on ${device.name}, attempting to reconnect ...")
+                    // reconnect
                     connectToBtDevice(device)
                 }
             }
@@ -249,72 +250,45 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
             override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
                 super.onServicesDiscovered(gatt, status)
                 if (status == BluetoothGatt.GATT_SUCCESS) {
-                    Log.d("****SATIS****", "Services discovered: ${gatt.services}")
-
                     // Find the GAP service
                     val gapService = gatt.getService(UUID.fromString("12345678-1234-5678-1234-567812345678"))
                     if (gapService != null) {
                         val deviceNameCharacteristic = gapService.getCharacteristic(UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6"))
                         if (deviceNameCharacteristic != null) {
                             readGattService(gatt, deviceNameCharacteristic)
-                            SharedMessageManager.gatt = gatt
-                            SharedMessageManager.deviceNameCharacteristic = deviceNameCharacteristic
+                            _gatt = gatt
+                            _deviceNameCharacteristic = deviceNameCharacteristic
                             startCommunicationTimer()
-                            Log.d("****SATIS****", "Reading Device Name characteristic")
                             navigateTo("chat_screen")
-                        } else {
-                            Log.w("****SATIS****", "Device Name characteristic not found in GAP service")
                         }
-                    } else {
-                        Log.w("****SATIS****", "GAP service not found")
                     }
-                } else {
-                    Log.w("****SATIS****", "Failed to discover services: $status")
                 }
             }
 
             override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
                 super.onCharacteristicRead(gatt, characteristic, status)
-                Log.d("****SATIS****", "Read response: EXECUTED *********")
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     if(characteristic.uuid == UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6")) {
                         val readResponse = characteristic.value.toString(Charsets.UTF_8)
-                        Log.d("****SATIS****", "Read response: $readResponse")
                         if (readResponse.isNotEmpty()) {
                             SharedMessageManager.messages.add(Message(readResponse, isSentByMe = false))
                         }
-                    } else {
-                        Log.d("****SATIS****", "Read characteristic: ${characteristic.uuid}, value: ${characteristic.value}")
                     }
-                } else {
-                    Log.w("****SATIS****", "Failed to read characteristic: ${characteristic.uuid}, status: $status")
                 }
             }
 
             @Deprecated("Deprecated in Java")
             override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
                 super.onCharacteristicChanged(gatt, characteristic)
-                val receivedData = characteristic.value.toString(Charsets.UTF_8)
-                Log.d("****SATIS****", "Data received: $receivedData")
             }
 
             override fun onCharacteristicWrite(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
                 super.onCharacteristicWrite(gatt, characteristic, status)
-                if (status == BluetoothGatt.GATT_SUCCESS) {
-                    Log.d("****SATIS****", "Data successfully written to characteristic: ${characteristic.uuid}")
-                } else {
-                    Log.w("****SATIS****", "Failed to write to characteristic: ${characteristic.uuid}")
-                }
             }
         })
-
-        Log.d("****SATIS****", "Attempting to connect to ${device.name} (${device.address})")
     }
 
     fun startGattServer() {
-        SharedMessageManager.isServerMode = true
-        Log.d("*******SATIS*******", "GATT SEVER IS SERVER MODE ??? : ${SharedMessageManager.isServerMode}")
-
         // Define a custom UUID for the service and characteristic
         val serviceUuid = UUID.fromString("12345678-1234-5678-1234-567812345678")
         val characteristicUuid = UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6")
@@ -343,23 +317,13 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            // missing permissions
             return
         }
         bluetoothGattServer = bluetoothManager.openGattServer(ctx, object : BluetoothGattServerCallback() {
             override fun onConnectionStateChange(device: BluetoothDevice, status: Int, newState: Int) {
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
-                    Log.d("*******SATIS*******", "GATT SEVER Device connected: ${device.address}")
                     connectToBtDevice(device)
-                } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                    Log.d("*******SATIS*******", "GATT SEVER Device disconnected: ${device.address}")
-                    //stopBluetoothAdvertising()
                 }
             }
 
@@ -369,9 +333,6 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 offset: Int,
                 characteristic: BluetoothGattCharacteristic
             ) {
-                Log.d("*******SATIS*******", "GATT SEVER Read request for characteristic: ${characteristic.uuid}")
-
-                // Example: Handle a specific characteristic
                 if (characteristic.uuid == UUID.fromString("a7e550c4-69d1-4a6b-9fe7-8e21e5d571b6")) {
                     // Provide the value for the characteristic
                     var responseValue = "".toByteArray(Charsets.UTF_8)
@@ -387,13 +348,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                                 Manifest.permission.BLUETOOTH_CONNECT
                             ) != PackageManager.PERMISSION_GRANTED
                         ) {
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
+                            // missing permisisions
                             return
                         }
 
@@ -436,31 +391,24 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 offset: Int,
                 value: ByteArray
             ) {
-                Log.d("*******SATIS*******", "GATT SEVER Write request for characteristic ID: ${characteristic.uuid}")
-                Log.d("*******SATIS*******", "GATT SEVER Write request for characteristic VALUE: ${value.toString(Charsets.UTF_8)}")
-                Log.d("*******SATIS*******", "GATT SEVER IS SERVER MODE 222 ??? : ${SharedMessageManager.isServerMode}")
-                if (value.toString(Charsets.UTF_8).isNotEmpty() && SharedMessageManager.isServerMode == true) {
+                if (value.toString(Charsets.UTF_8).isNotEmpty()) {
                     SharedMessageManager.messages.add(Message(value.toString(Charsets.UTF_8), isSentByMe = false))
                     navigateTo("chat_screen")
                 }
-                // Handle characteristic write request
             }
         })
 
         // Add the service to the GATT server
-        val serviceAdded = bluetoothGattServer.addService(service)
-        Log.d("*******SATIS*******", "**************** Service added to GATT server: $serviceAdded **********************")
+        bluetoothGattServer.addService(service)
         stopBluetoothAdvertising()
         startBluetoothAdvertising()
     }
 
     fun startBluetoothAdvertising() {
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
-            Log.e("*******SATIS*******", "Bluetooth is not enabled or not supported.")
             return
         }
 
-        //val advertiser = bluetoothAdapter.bluetoothLeAdvertiser
         advertiser = bluetoothAdapter.bluetoothLeAdvertiser
 
         // Define the advertising settings
@@ -483,25 +431,15 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 Manifest.permission.BLUETOOTH_ADVERTISE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Log.d("*******SATIS*******", "******** PERMISSION FAIL ****************")
+            // missing permissions
             return
         }
-        Log.d("*******SATIS*******", "START advertising...")
         advertiser.startAdvertising(advertisingSettings, advertisingData, object : AdvertiseCallback() {
             override fun onStartSuccess(settingsInEffect: AdvertiseSettings) {
-                Log.d("*******SATIS*******", "Advertising started successfully.")
                 isAdvertising = true
             }
 
             override fun onStartFailure(errorCode: Int) {
-                Log.e("*******SATIS*******", "Advertising failed to start. Error code: $errorCode")
             }
         })
     }
@@ -512,13 +450,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            // missing permissions
             return
         }
         deviceNameCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
@@ -539,12 +471,8 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
         }, 0, 7000) // Initial delay = 0, period = 7000 ms (7 seconds)
     }
 
-    fun stopKeepAlive() {
-        timer.cancel()
-    }
-
     private fun sendKeepAliveMessage() {
-        readGattService(gatt = SharedMessageManager.gatt!!, deviceNameCharacteristic = SharedMessageManager.deviceNameCharacteristic!!)
+        readGattService(gatt = _gatt, deviceNameCharacteristic = _deviceNameCharacteristic)
     }
 
     fun stopBluetoothAdvertising() {
@@ -553,13 +481,7 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
                 Manifest.permission.BLUETOOTH_ADVERTISE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            // missing permissions
             return
         }
 
@@ -567,19 +489,14 @@ class BtManager(val ctx: Context, val activity: ComponentActivity) : ViewModel()
             return
         }
 
-
-
         advertiser.stopAdvertising(object : AdvertiseCallback() {
             override fun onStartSuccess(settingsInEffect: AdvertiseSettings) {
-                Log.d("*******SATIS*******", "Advertising stopped successfully.")
                 isAdvertising = false
             }
 
             override fun onStartFailure(errorCode: Int) {
-                Log.e("*******SATIS*******", "Failed to stop advertising. Error code: $errorCode")
             }
         })
-        Log.d("*******SATIS*******", "Stopped advertising.")
     }
 
 }
